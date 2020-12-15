@@ -1,6 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
+if (app.get("env") == "development") {
+  require("dotenv").config();
+}
 const mongoose = require("./database/mongoose");
 let indexRouter = require("./routes/index");
 const passport = require("passport");
@@ -37,4 +39,6 @@ app.get("/", function (req, res) {
   res.send("App is Running");
 });
 
-app.listen(3000, () => console.log("Server connected on port 3000"));
+app.listen(process.env.PORT || 3000, () =>
+  console.log("Server connected on port 3000")
+);

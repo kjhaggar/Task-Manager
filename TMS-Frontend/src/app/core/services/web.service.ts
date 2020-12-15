@@ -8,7 +8,8 @@ export class WebService {
   rootUrl = '';
 
   constructor(private httpClient: HttpClient) {
-    this.rootUrl = 'http://localhost:3000';
+    // this.rootUrl = 'http://localhost:3000';
+    this.rootUrl = 'https://app-tms-server.herokuapp.com';
   }
 
   get(uri: string) {
