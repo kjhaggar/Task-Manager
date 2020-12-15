@@ -164,7 +164,7 @@
             <ng-template ngbNavContent>
               <div class="card-header mb-2">
                 TASKS
-                <a class="close pointer" (click)="openModel(content, 'Task')">
+                <a *ngIf="userRole === 'admin'" class="close pointer" (click)="openModel(content, 'Task')">
                   Add Task
                 </a>
               </div>
@@ -383,7 +383,7 @@
       type="button"
       class="btn btn-outline-dark"
       (click)="add()"
-      [disabled]="!form.valid"
+      [disabled]="!form?.valid"
     >
       Add
     </button>
