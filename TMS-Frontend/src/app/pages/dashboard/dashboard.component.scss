@@ -1,0 +1,16 @@
+.close {
+  font-size: 1.4rem;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.nav-link:hover > .close {
+  opacity: 0.8;
+  color: red;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+.bi-trash-fill:hover {
+  color: #dc3545 !important;
+}

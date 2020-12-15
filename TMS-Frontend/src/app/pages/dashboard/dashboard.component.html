@@ -1,0 +1,391 @@
+<div class="container-fluid">
+  <div class="p-5">
+    <div class="row my-2">
+      <div class="col-4">
+        <div *ngIf="userRole !== 'admin' && userDetail">
+          <h4 class="mb-0">
+            Welcome {{ userDetail.firstName }} {{ userDetail.lastName }}
+          </h4>
+          <small>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="currentColor"
+              class="bi bi-envelope-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"
+              />
+            </svg>
+            {{ userDetail.email }} |
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="currentColor"
+              class="bi bi-telephone-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.267.98a1.636 1.636 0 0 1 2.448.152l1.681 2.162c.309.396.418.913.296 1.4l-.513 2.053a.636.636 0 0 0 .167.604L8.65 9.654a.636.636 0 0 0 .604.167l2.052-.513a1.636 1.636 0 0 1 1.401.296l2.162 1.681c.777.604.849 1.753.153 2.448l-.97.97c-.693.693-1.73.998-2.697.658a17.47 17.47 0 0 1-6.571-4.144A17.47 17.47 0 0 1 .639 4.646c-.34-.967-.035-2.004.658-2.698l.97-.969z"
+              />
+            </svg>
+            {{ userDetail.phone }}</small
+          >
+        </div>
+      </div>
+      <h1 class="col-4 text-center text-light">Task Manager</h1>
+      <div class="col-4 text-right">
+        <button
+          *ngIf="userRole === 'admin'"
+          type="button"
+          class="btn btn-light ml-2"
+          (click)="navigate()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-people-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"
+            />
+          </svg>
+          List Members
+        </button>
+        <button
+          type="button"
+          class="btn btn-light ml-2"
+          (click)="authService.logout()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-power"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.578 4.437a5 5 0 1 0 4.922.044l.5-.866a6 6 0 1 1-5.908-.053l.486.875z"
+            />
+            <path fill-rule="evenodd" d="M7.5 8V1h1v7h-1z" />
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+    <div class="card p-2">
+      <div class="d-flex" *ngIf="lists.length; else noProject">
+        <ul
+          ngbNav
+          #nav="ngbNav"
+          [(activeId)]="active"
+          class="nav-pills w-25"
+          orientation="vertical"
+          (activeIdChange)="selectProject($event)"
+        >
+          <div class="card-header mb-2">PROJECT LIST</div>
+          <li
+            class="d-flex"
+            [ngbNavItem]="i"
+            *ngFor="let list of lists; let i = index"
+          >
+            <a class="w-100" ngbNavLink>
+              <span *ngIf="!editProjT[i]">
+                {{ list.title.substring(0, 15) }}
+                {{ list.title.length > 15 ? "..." : "" }}
+                <span class="float-right" *ngIf="userRole === 'admin'">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pencil-square"
+                    viewBox="0 0 16 16"
+                    (click)="toggleEditInput(i)"
+                  >
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                    />
+                  </svg>
+                </span>
+              </span>
+              <span *ngIf="editProjT[i]">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Title"
+                    [value]="list.title"
+                    #listTitle
+                  />
+
+                  <div class="align-items-center input-group-append mx-auto">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-check2-square"
+                      viewBox="0 0 16 16"
+                      (click)="editListTitle(list, listTitle.value)"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        d="M1.5 13A1.5 1.5 0 0 0 3 14.5h10a1.5 1.5 0 0 0 1.5-1.5V8a.5.5 0 0 0-1 0v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 0 0-1H3A1.5 1.5 0 0 0 1.5 3v10z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="mx-1 small text-dark">
+                  Title minimun length is 3.
+                </div>
+              </span>
+            </a>
+
+            <ng-template ngbNavContent>
+              <div class="card-header mb-2">
+                TASKS
+                <a class="close pointer" (click)="openModel(content, 'Task')">
+                  Add Task
+                </a>
+              </div>
+              <div
+                *ngIf="tasks.length; else blankMsg"
+                class="list-group list-group-flush"
+              >
+                <a
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let task of tasks; let j = index"
+                >
+                  <div class="row">
+                    <div class="col-3">
+                      <span *ngIf="!editTaskT[j]">
+                        {{ task.title }}
+                        <span
+                          *ngIf="userRole === 'admin'"
+                          class="float-right pointer"
+                          placement="top"
+                          ngbTooltip="Edit Task Title"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-pencil-square"
+                            viewBox="0 0 16 16"
+                            (click)="toggleTaskEditInput(j)"
+                          >
+                            <path
+                              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                      <span *ngIf="editTaskT[j]">
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Title"
+                            [value]="task.title"
+                            #taskTitle
+                          />
+
+                          <div
+                            class="align-items-center input-group-append mx-auto pointer"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              class="bi bi-check2-square"
+                              viewBox="0 0 16 16"
+                              (click)="editTaskTitle(task, taskTitle.value)"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"
+                              />
+                              <path
+                                fill-rule="evenodd"
+                                d="M1.5 13A1.5 1.5 0 0 0 3 14.5h10a1.5 1.5 0 0 0 1.5-1.5V8a.5.5 0 0 0-1 0v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 0 0-1H3A1.5 1.5 0 0 0 1.5 3v10z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="mx-1 small text-dark">
+                          Title minimun length is 3.
+                        </div>
+                      </span>
+                    </div>
+                    <div class="col-5">
+                      <div class="input-group mb-3">
+                        <div
+                          ngbDropdown
+                          autoClose="outside"
+                          class="input-group-prepend"
+                        >
+                          <button ngbDropdownToggle class="btn z-index-0">
+                            Assigned To
+                          </button>
+                          <div ngbDropdownMenu>
+                            <div
+                              ngbDropdownItem
+                              class="form-check"
+                              *ngFor="let user of users; let i = index"
+                              (click)="toggleUser($event, user, task._id)"
+                            >
+                              <input
+                                [disabled]="userRole !== 'admin'"
+                                id="checkbox{{ i }}{{ task._id }}"
+                                type="checkbox"
+                                class="form-check-input pointer"
+                                [checked]="isChecked(task.assignedTo, user._id)"
+                              />
+                              <label
+                                for="checkbox{{ i }}{{ task._id }}"
+                                class="form-check-label"
+                              >
+                                {{ user.firstName }} {{ user.lastName }}
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                        <input
+                          readonly
+                          type="text"
+                          class="form-control"
+                          [value]="filterName(task.assignedTo)"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div ngbDropdown class="d-inline-flex">
+                        <button ngbDropdownToggle class="btn">Status</button>
+                        <div ngbDropdownMenu>
+                          <a
+                            ngbDropdownItem
+                            class="form-check"
+                            *ngFor="let status of statusList; let k = index"
+                            (click)="updateTaskStatus(task, status)"
+                          >
+                            {{ status }}
+                          </a>
+                        </div>
+                      </div>
+                      <span
+                        [ngClass]="{
+                          'text-warning': task.status === 'Pending',
+                          'text-success': task.status === 'In Progress',
+                          'text-dark': task.status === 'Completed'
+                        }"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-circle-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <circle cx="8" cy="8" r="8" />
+                        </svg>
+                        {{ task.status }}
+                      </span>
+                    </div>
+                    <div class="col-1" *ngIf="userRole === 'admin'">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-trash-fill"
+                        viewBox="0 0 16 16"
+                        (click)="removeTask(task._id)"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <ng-template #blankMsg>
+                <div class="text-center">No task added!</div>
+              </ng-template>
+            </ng-template>
+          </li>
+          <a
+            *ngIf="userRole === 'admin'"
+            class="bottom-0 btn btn-primary my-2 mx-5"
+            (click)="openModel(content, 'Project')"
+            >Add Project</a
+          >
+        </ul>
+
+        <div [ngbNavOutlet]="nav" class="ml-4"></div>
+      </div>
+      <ng-template #noProject>
+        <div class="text-center">No Task Assigned Yet!</div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Add New {{ modelType }}</h4>
+    <a class="close pointer" (click)="modal.dismiss()">×</a>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" *ngIf="form">
+      <div class="form-group">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Title"
+            formControlName="title"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="add()"
+      [disabled]="!form.valid"
+    >
+      Add
+    </button>
+  </div>
+</ng-template>
